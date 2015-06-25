@@ -1,0 +1,4 @@
+---
+# file: self.yml
+- include: webservers.yml
+- include: dbservers.yml

@@ -1,0 +1,87 @@
+---
+# file: roles/webtier/tasks/main.yml
+- set_fact: project_release={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
+  when: project_release == None
+
+- name: Create/prepare directories for release and shared data.
+  file: state=directory path={{item.path}}
+  with_items:
+    - { path: "{{project_root}}/releases/{{project_release}}" }
+    - { path: "{{project_root}}/shared" }
+    - { path: "{{project_root}}/shared/app/config" }
+    - { path: "{{project_root}}/shared/app/logs" }
+    - { path: "{{project_root}}/shared/web/uploads" }
+
+#- name: Install Nginx
+#  apt: pkg=nginx state=installed update_cache=true
+#
+#- name: Install Varnish
+#  apt: pkg=varnish state=installed update_cache=true
+
+- name: Pull sources from the repository
+  git: repo=https://github.com/InnovaLangues/self.git dest="{{ project_root }}/releases/{{project_release}}" version={{project_branch}}
+
+- name: Cache permissions
+  shell: cd {{project_root}}/releases/{{project_release}} && setfacl -R -m u:www-data:rwX app/cache && setfacl -dR -m u:www-data:rwX app/cache
+
+- name: Clean out versioning.
+  file: state=absent path={{project_root}}/releases/{{project_release}}/.git
+  when: project_clean_versioning == true
+
+- name: Ensure logs directory is not present.
+  file: state=absent path={{project_root}}/releases/{{project_release}}/app/logs
+
+- name: Create symlinks to shared directories.
+  file: state=link src={{item.src}} path={{item.path}}
+  with_items:
+    - { src: "{{project_root}}/shared/app/logs", path: "{{project_root}}/releases/{{project_release}}/app/logs" }
+    - { src: "{{project_root}}/shared/web/uploads", path: "{{project_root}}/releases/{{project_release}}/web/uploads" }
+
+- name: Check if config dir exists.
+  stat: path={{project_root}}/releases/{{project_release}}/app/config
+  register: config_dir
+
+- name: Link configs dir if not yet exists.
+  file: state=link src={{project_root}}/shared/app/config path={{project_root}}/releases/{{project_release}}/app/config
+  when: config_dir.stat.exists == false
+
+- name: Check if shared/app/config/parameters.yml exists.
+  stat: path={{project_root}}/shared/app/config/parameters.yml
+  register: parameters_yml
+
+- name: Create symlink for app/config/parameters.yml from shared directory.
+  shell: ln -s {{project_root}}/shared/app/config/parameters.yml {{project_root}}/releases/{{project_release}}/app/config/parameters.yml creates={{project_root}}/releases/{{project_release}}/app/config/parameters.yml
+  when: parameters_yml.stat.exists
+
+- name: Check if composer exists.
+  stat: path={{project_root}}/composer.phar
+  register: composer_file
+
+- name: Install composer.
+  get_url: url=https://getcomposer.org/composer.phar dest={{project_composer_path}} mode=0755 validate_certs=no
+  when: composer_file.stat.exists == false
+
+- name: Update composer if already exists.
+  shell: "{{project_composer_path}}/composer.phar selfupdate"
+  when: composer_file.stat.exists == true
+
+- name: Run composer install.
+  shell: cd {{project_root}}/releases/{{project_release}} && export SYMFONY_ENV={{project_env}} && {{project_php_path}} {{project_composer_path}}/composer.phar install {{project_composer_opts}}
+
+- name: Dump js translations
+  shell: cd {{project_root}}/releases/{{project_release}} && {{project_php_path}} app/console bazinga:js-translation:dump
+
+- name: Dump assets.
+  shell: cd {{project_root}}/releases/{{project_release}} && {{project_php_path}} app/console assetic:dump --env={{project_env}} {{project_console_opts}}
+
+- name: Run migrations.
+  shell: cd {{project_root}}/releases/{{project_release}} && if $(grep doctrine-migrations-bundle composer.json); then {{project_php_path}} app/console doctrine:migrations:migrate -n; fi
+  when: fire_migrations == true
+
+
+- name: Create symlink.
+  file: state=link src={{project_root}}/releases/{{project_release}} path={{project_root}}/current
+
+- name: Cleanup releases.
+  shell: cd {{project_root}}/releases && ls -t1 | tail -n +$(({{project_keep_releases}}+1)) | xargs -n1 rm -rf
+  notify: restart varnish

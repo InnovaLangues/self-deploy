@@ -68,16 +68,15 @@
 - name: Run composer install.
   shell: cd {{project_root}}/releases/{{project_release}} && export SYMFONY_ENV={{project_env}} && {{project_php_path}} {{project_composer_path}}/composer.phar install {{project_composer_opts}}
 
+- name: Run migrations.
+  shell: cd {{project_root}}/releases/{{project_release}} && if $(grep doctrine-migrations-bundle composer.json); then {{project_php_path}} app/console doctrine:migrations:migrate -n; fi
+  when: inventory_hostname == groups.web[0] and fire_migrations == true
+
 - name: Dump js translations
   shell: cd {{project_root}}/releases/{{project_release}} && {{project_php_path}} app/console bazinga:js-translation:dump
 
 - name: Dump assets.
   shell: cd {{project_root}}/releases/{{project_release}} && {{project_php_path}} app/console assetic:dump --env={{project_env}} {{project_console_opts}}
-
-- name: Run migrations.
-  shell: cd {{project_root}}/releases/{{project_release}} && if $(grep doctrine-migrations-bundle composer.json); then {{project_php_path}} app/console doctrine:migrations:migrate -n; fi
-  when: fire_migrations == true
-
 
 - name: Create symlink.
   file: state=link src={{project_root}}/releases/{{project_release}} path={{project_root}}/current

@@ -1,7 +1,0 @@
----
-# file: dbservers.yml
-- hosts: db
-  sudo: yes
-  roles:
-    - common
-    #- dbtier

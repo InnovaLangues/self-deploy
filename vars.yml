@@ -11,14 +11,8 @@ project_composer_opts: "--no-dev --optimize-autoloader --no-interaction"
 project_php_path: php
 project_env: prod
 project_composer_path: "{{ project_root }}/shared"
-project_console_opts: '--no-debug'
+project_console_opts: "--no-debug"
 fire_migrations: true
-project_branch: "cache" #change this
-
-#db_name: symfony
-#db_host: localhost
-#db_user: symfony
-#db_user_pass: this_is_not_a_good_password
-
-# remote user used to clear application cache, update databases install dependencies etc.
+project_branch: "cache"
 remote_user: www-data
+local_user: Donovan

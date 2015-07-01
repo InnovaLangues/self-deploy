@@ -1,9 +1,9 @@
 ---
-# file: webservers.yml
+# file: post_deploy.yml
 - hosts: web
   sudo: yes
   gather_facts: false
   vars_files:
     - vars.yml
   roles:
-    - webtier
+    - post_deploy

@@ -1,0 +1,10 @@
+---
+# file: roles/post_deploy/tasks/main.yml
+
+- name: Unlock website
+  shell: cd {{project_root}}/releases/{{project_release}} && php app/console lexik:maintenance:unlock -n
+
+
+- name: Hubot say finished
+  shell: cd {{project_root}}/releases/{{project_release}} && php app/console self:gitter "{{ local_user }} à fini de déployer la plateforme"
+  when: inventory_hostname == groups.web[0]

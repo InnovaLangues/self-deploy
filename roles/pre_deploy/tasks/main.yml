@@ -1,0 +1,6 @@
+---
+# file: roles/pre_deploy/tasks/main.yml
+
+- name: Hubot say started
+  shell: cd {{project_root}}/releases/current && php app/console self:gitter "{{ local_user }} has started a new SELF deployment)"
+  when: inventory_hostname == groups.web[0]

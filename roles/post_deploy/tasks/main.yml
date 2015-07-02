@@ -6,5 +6,5 @@
 
 
 - name: Hubot say finished
-  shell: cd {{project_root}}/releases/{{project_release}} && php app/console self:gitter "{{ local_user }} has finished SELF deployment ({{project_release}})"
+  shell: cd {{project_root}}/releases/{{project_release}} && php app/console self:gitter "{{ local_user }} has finished SELF deployment - {{project_release}}"
   when: inventory_hostname == groups.web[0]

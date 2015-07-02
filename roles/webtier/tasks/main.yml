@@ -4,7 +4,7 @@
   when: project_release == None
 
 - name: Hubot say project release
-  shell: cd {{project_root}}/releases/current && php app/console self:gitter "SELF deployment has been assigned a project release - {{project release}}"
+  shell: cd {{project_root}}/current && php app/console self:gitter "SELF deployment has been assigned a project release - {{project_release}}"
   when: inventory_hostname == groups.web[0]
 
 - name: Create/prepare directories for release and shared data.

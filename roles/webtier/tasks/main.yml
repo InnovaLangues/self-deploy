@@ -14,9 +14,22 @@
     - { path: "{{project_root}}/shared" }
     - { path: "{{project_root}}/shared/app/config" }
     - { path: "{{project_root}}/shared/app/logs" }
+    - { path: "{{project_gluster_mount}}/www/app/data" }
+    - { path: "{{project_gluster_mount}}/www/web/upload" }
+    - { path: "{{project_gluster_mount}}/www/web/upload/export" }
+    - { path: "{{project_gluster_mount}}/www/web/upload/exportPdf" }
+    - { path: "{{project_gluster_mount}}/www/web/upload/importCsv" }
+    - { path: "{{project_gluster_mount}}/www/web/upload/session" }
+    - { path: "{{project_gluster_mount}}/www/web/upload/user" }
+
+- name: Gluster app/data ACL folder permissions
+  shell: cd {{project_gluster_mount}}/www/app/ && setfacl -R -m u:www-data:rwX data && setfacl -dR -m u:www-data:rwX data
+
+- name: Gluster web/puload ACL folder permissions
+  shell: cd {{project_gluster_mount}}/www/web/ && setfacl -R -m u:www-data:rwX upload && setfacl -dR -m u:www-data:rwX upload
 
 - name: Pull sources from the repository
-  git: repo=https://github.com/InnovaLangues/self.git dest="{{ project_root }}/releases/{{project_release}}" version={{project_branch}}
+  git: repo=https://github.com/InnovaLangues/self.git dest={{ project_root }}/releases/{{project_release}} version={{project_branch}}
 
 - name: Cache permissions
   shell: cd {{project_root}}/releases/{{project_release}} && setfacl -R -m u:www-data:rwX app/cache && setfacl -dR -m u:www-data:rwX app/cache
@@ -86,7 +99,7 @@
   shell: cd {{project_root}}/releases/{{project_release}} && php app/console lexik:maintenance:lock -n
 
 - name: Run migrations.
-  shell: cd {{project_root}}/releases/{{project_release}} && if $(grep doctrine-migrations-bundle composer.json); then {{project_php_path}} app/console doctrine:migrations:migrate -n; fi
+  shell: cd {{project_root}}/releases/{{project_release}} && php app/console doctrine:migrations:migrate -n
   when: inventory_hostname == groups.web[0] and fire_migrations == true
 
 - name: Cleanup releases.

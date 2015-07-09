@@ -53,7 +53,7 @@
   shell: ln -s {{project_gluster_mount}}/www/app/data {{project_root}}/releases/{{project_release}}/app/data creates={project_root}}/releases/{{project_release}}/app/data
 
 - name: Create symlink for web/upload from gluster share.
-  shell: ln -s {{project_gluster_mount}}/www/web/upload {project_root}}/releases/{{project_release}}/web/upload creates={project_root}}/releases/{{project_release}}/web/upload
+  shell: ln -s {{project_gluster_mount}}/www/web/upload {{project_root}}/releases/{{project_release}}/web/upload creates={{project_root}}/releases/{{project_release}}/web/upload
 
 - name: Check if composer exists.
   stat: path={{project_root}}/composer.phar

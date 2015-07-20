@@ -102,6 +102,10 @@
   shell: cd {{project_root}}/releases/{{project_release}} && php app/console doctrine:migrations:migrate -n
   when: inventory_hostname == groups.web[0] and fire_migrations == true
 
+- name: Run migrations.
+  shell: cd {{project_root}}/releases/{{project_release}} && php app/console self:fixtures:load
+  when: inventory_hostname == groups.web[0] and fire_migrations == true
+
 - name: Cleanup releases.
   shell: cd {{project_root}}/releases && ls -t1 | tail -n +$(({{project_keep_releases}}+1)) | xargs -n1 rm -rf
   notify: restart varnish

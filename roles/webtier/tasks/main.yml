@@ -102,7 +102,7 @@
   shell: cd {{project_root}}/releases/{{project_release}} && php app/console doctrine:migrations:migrate -n
   when: inventory_hostname == groups.web[0] and fire_migrations == true
 
-- name: Run migrations.
+- name: Run fixtures.
   shell: cd {{project_root}}/releases/{{project_release}} && php app/console self:fixtures:load
   when: inventory_hostname == groups.web[0] and fire_migrations == true
 

@@ -28,6 +28,10 @@
 - name: Gluster web/puload ACL folder permissions
   shell: cd {{project_gluster_mount}}/www/web/ && setfacl -R -m u:www-data:rwX upload && setfacl -dR -m u:www-data:rwX upload
 
+- name: Hubot say project brach
+  shell: cd {{project_root}}/current && php app/console self:gitter "Deploying from {{project_branch}} branch"
+  when: inventory_hostname == groups.web[0]
+
 - name: Pull sources from the repository
   git: repo=https://github.com/InnovaLangues/self.git dest={{ project_root }}/releases/{{project_release}} version={{project_branch}}
 

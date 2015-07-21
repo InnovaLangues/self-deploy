@@ -16,11 +16,11 @@
     - { path: "{{project_root}}/shared/app/logs" }
     - { path: "{{project_gluster_mount}}/www/app/data" }
     - { path: "{{project_gluster_mount}}/www/web/upload" }
-    - { path: "{{project_gluster_mount}}/www/web/upload/export" }
-    - { path: "{{project_gluster_mount}}/www/web/upload/exportPdf" }
-    - { path: "{{project_gluster_mount}}/www/web/upload/importCsv" }
-    - { path: "{{project_gluster_mount}}/www/web/upload/session" }
-    - { path: "{{project_gluster_mount}}/www/web/upload/user" }
+    - { path: "{{project_gluster_mount}}/www/app/data/export" }
+    - { path: "{{project_gluster_mount}}/www/app/data/exportPdf" }
+    - { path: "{{project_gluster_mount}}/www/app/data/importCsv" }
+    - { path: "{{project_gluster_mount}}/www/app/data/session" }
+    - { path: "{{project_gluster_mount}}/www/app/data/user" }
 
 - name: Gluster app/data ACL folder permissions
   shell: cd {{project_gluster_mount}}/www/app/ && setfacl -R -m u:www-data:rwX data && setfacl -dR -m u:www-data:rwX data

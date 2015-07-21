@@ -1,7 +1,7 @@
 ---
 project_release: ~
 project_keep_releases: 5
-project_name: self3.innovalangues.net
+project_name: self.innovalangues.net
 project_path: /usr/share/nginx/www
 project_gluster_mount: /storage-pool
 project_root: "{{ project_path }}/{{ project_name }}"

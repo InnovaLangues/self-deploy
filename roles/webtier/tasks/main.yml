@@ -1,24 +1,18 @@
 ---
 # file: roles/webtier/tasks/main.yml
 
-- name: Create/prepare base directory
-  file: state=directory path={{item.path}}
-  with_items:
-    - { path: "{{project_root}}/current" }
-
 - set_fact: project_release={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
   when: project_release == None
 
 - name: Hubot say project release
   shell: cd {{project_root}}/current && php app/console self:gitter "SELF deployment has been assigned a project release - {{project_release}}"
-  when: inventory_hostname == groups.web[0]
+  when: inventory_hostname == groups.web[0] and previous_deploy.stat.exists
 
 - name: Create/prepare directories for release and shared data.
   file: state=directory path={{item.path}}
   with_items:
     - { path: "{{project_root}}/releases/{{project_release}}" }
     - { path: "{{project_root}}/shared" }
-    - { path: "{{project_root}}/shared/app/config" }
     - { path: "{{project_root}}/shared/app/logs" }
     - { path: "{{project_gluster_mount}}/www/app/data" }
     - { path: "{{project_gluster_mount}}/www/web/upload" }
@@ -31,12 +25,12 @@
 - name: Gluster app/data ACL folder permissions
   shell: cd {{project_gluster_mount}}/www/app/ && setfacl -R -m u:www-data:rwX data && setfacl -dR -m u:www-data:rwX data
 
-- name: Gluster web/puload ACL folder permissions
+- name: Gluster web/upload ACL folder permissions
   shell: cd {{project_gluster_mount}}/www/web/ && setfacl -R -m u:www-data:rwX upload && setfacl -dR -m u:www-data:rwX upload
 
 - name: Hubot say project brach
   shell: cd {{project_root}}/current && php app/console self:gitter "Deploying from {{project_branch}} branch"
-  when: inventory_hostname == groups.web[0]
+  when: inventory_hostname == groups.web[0] and previous_deploy.stat.exists
 
 - name: Pull sources from the repository
   git: repo=https://github.com/InnovaLangues/self.git dest={{ project_root }}/releases/{{project_release}} version={{project_branch}}
@@ -56,20 +50,8 @@
   with_items:
     - { src: "{{project_root}}/shared/app/logs", path: "{{project_root}}/releases/{{project_release}}/app/logs" }
 
-- name: Check if config dir exists.
-  stat: path={{project_root}}/releases/{{project_release}}/app/config
-  register: config_dir
-
-- name: Link configs dir if not yet exists.
-  file: state=link src={{project_root}}/shared/app/config path={{project_root}}/releases/{{project_release}}/app/config
-  when: config_dir.stat.exists == false
-
-- name: Check if shared/app/config/parameters.yml exists.
-  stat: path={{project_root}}/shared/app/config/parameters.yml
-  register: parameters_yml
-
 - name: Create symlink for app/config/parameters.yml from shared directory.
-  shell: ln -s {{project_root}}/shared/app/config/parameters.yml {{project_root}}/releases/{{project_release}}/app/config/parameters.yml creates={{project_root}}/releases/{{project_release}}/app/config/parameters.yml
+  shell: ln -s {{project_gluster_mount}}/www/app/config/parameters.yml {{project_root}}/releases/{{project_release}}/app/config/parameters.yml creates={{project_root}}/releases/{{project_release}}/app/config/parameters.yml
   when: parameters_yml.stat.exists
 
 - name: Create symlink for app/data from gluster share.

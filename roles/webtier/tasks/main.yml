@@ -4,8 +4,11 @@
 - set_fact: project_release={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
   when: project_release == None
 
+- name: Faye warning message
+  shell: cd {{project_root}}/releases/{{project_release}} && php app/console self:maintenance 1 "Une mise à jour du logiciel SELF est en cours"
+
 - name: Hubot say project release
-  shell: cd {{project_root}}/current && php app/console self:gitter "SELF deployment has been assigned a project release - {{project_release}}"
+  shell: cd {{project_root}}/current && php app/console self:gitter "Je commence à déployer SELF avec la release suivante - {{project_release}}"
   when: inventory_hostname == groups.web[0] and previous_deploy.stat.exists
 
 - name: Create/prepare directories for release and shared data.
@@ -29,7 +32,7 @@
   shell: cd {{project_gluster_mount}}/www/web/ && setfacl -R -m u:www-data:rwX upload && setfacl -dR -m u:www-data:rwX upload
 
 - name: Hubot say project brach
-  shell: cd {{project_root}}/current && php app/console self:gitter "Deploying from {{project_branch}} branch"
+  shell: cd {{project_root}}/current && php app/console self:gitter "Je deploie depuis la branche {{project_branch}}"
   when: inventory_hostname == groups.web[0] and previous_deploy.stat.exists
 
 - name: Pull sources from the repository
@@ -84,11 +87,11 @@
 - name: Dump assets.
   shell: cd {{project_root}}/releases/{{project_release}} && {{project_php_path}} app/console assetic:dump --env={{project_env}} {{project_console_opts}}
 
-- name: Create symlink.
-  file: state=link src={{project_root}}/releases/{{project_release}} path={{project_root}}/current
-
 - name: Lock website
   shell: cd {{project_root}}/releases/{{project_release}} && php app/console lexik:maintenance:lock -n
+
+- name: Create symlink.
+  file: state=link src={{project_root}}/releases/{{project_release}} path={{project_root}}/current
 
 - name: Run migrations.
   shell: cd {{project_root}}/releases/{{project_release}} && php app/console doctrine:migrations:migrate -n

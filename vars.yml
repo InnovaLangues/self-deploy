@@ -16,4 +16,4 @@ project_console_opts: "--no-debug"
 fire_migrations: true
 project_branch: "master"
 remote_user: www-data
-local_user: Heartbeat
+local_user: Hubot

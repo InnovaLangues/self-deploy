@@ -5,7 +5,7 @@
   when: project_release == None
 
 - name: Faye warning message
-  shell: cd {{project_root}}/releases/{{project_release}} && php app/console self:maintenance 1 "Une mise à jour du logiciel SELF est en cours"
+  shell: cd {{project_root}}/current && php app/console self:maintenance 1 "Une mise à jour du logiciel SELF est en cours"
 
 - name: Hubot say project release
   shell: cd {{project_root}}/current && php app/console self:gitter "Je commence à déployer SELF avec la release suivante - {{project_release}}"

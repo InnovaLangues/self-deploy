@@ -32,7 +32,7 @@
   shell: cd {{project_gluster_mount}}/www/web/ && setfacl -R -m u:www-data:rwX upload && setfacl -dR -m u:www-data:rwX upload
 
 - name: Hubot say project brach
-  shell: cd {{project_root}}/current && php app/console self:gitter "Je deploie depuis la branche {{project_branch}}"
+  shell: cd {{project_root}}/current && php app/console self:gitter "Je déploie depuis la branche {{project_branch}}"
   when: inventory_hostname == groups.web[0] and previous_deploy.stat.exists
 
 - name: Pull sources from the repository

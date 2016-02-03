@@ -79,7 +79,7 @@
   shell: cd {{project_root}}/releases/{{project_release}} && export SYMFONY_ENV={{project_env}} && {{project_php_path}} {{project_composer_path}}/composer.phar install {{project_composer_opts}}
 
 - name: Dump js routing
-  shell: cd {{project_root}}/releases/{{project_release}} && php app/console fos:js-routing:dump
+  shell: cd {{project_root}}/releases/{{project_release}} && php app/console fos:js-routing:dump --env=prod
 
 - name: Dump js translations
   shell: cd {{project_root}}/releases/{{project_release}} && {{project_php_path}} app/console bazinga:js-translation:dump

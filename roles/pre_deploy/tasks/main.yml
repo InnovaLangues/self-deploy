@@ -13,7 +13,3 @@
   file: state=directory path={{item.path}}
   with_items:
     - { path: "{{project_root}}" }
-
-- name: Hubot say started
-  shell: cd {{project_root}}/current && php app/console self:gitter "{{ local_user }} has started a new SELF deployment"
-  when: inventory_hostname == groups.web[0] and previous_deploy.stat.exists

@@ -7,10 +7,6 @@
 - name: Faye warning message
   shell: cd {{project_root}}/current && php app/console self:maintenance 1 "Une mise à jour du logiciel SELF est en cours"
 
-- name: Hubot say project release
-  shell: cd {{project_root}}/current && php app/console self:gitter "Je commence à déployer SELF avec la release suivante - {{project_release}}"
-  when: inventory_hostname == groups.web[0] and previous_deploy.stat.exists
-
 - name: Create/prepare directories for release and shared data.
   file: state=directory path={{item.path}}
   with_items:
@@ -30,10 +26,6 @@
 
 - name: Gluster web/upload ACL folder permissions
   shell: cd {{project_gluster_mount}}/www/web/ && setfacl -R -m u:www-data:rwX upload && setfacl -dR -m u:www-data:rwX upload
-
-- name: Hubot say project brach
-  shell: cd {{project_root}}/current && php app/console self:gitter "Je déploie depuis la branche {{project_branch}}"
-  when: inventory_hostname == groups.web[0] and previous_deploy.stat.exists
 
 - name: Pull sources from the repository
   git: repo=https://github.com/InnovaLangues/self.git dest={{ project_root }}/releases/{{project_release}} version={{project_branch}}

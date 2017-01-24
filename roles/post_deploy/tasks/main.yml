@@ -6,7 +6,3 @@
 
 - name: Faye end warning message
   shell: cd {{project_root}}/releases/{{project_release}} && php app/console self:maintenance 0
-
-- name: Hubot say finished
-  shell: cd {{project_root}}/releases/{{project_release}} && php app/console self:gitter "J'ai fini le déploiement de la release SELF suivante - {{project_release}}"
-  when: inventory_hostname == groups.web[0]

@@ -2,10 +2,10 @@
 # file: roles/pre_deploy/tasks/main.yml
 
 - name: Check to see if parameters.yml exists
-  stat: path={{project_gluster_mount}}/www/app/config/parameters.yml
+  stat: path={{project_gluster_mount}}/app/config/parameters.yml
   register: parameters_yml
 
-- name: Check to see if there has allready been a previous deploy
+- name: Check to see if there has already been a previous deploy
   stat: path={{project_root}}/current
   register: previous_deploy
 

@@ -1,4 +1,4 @@
-#Ansible SELF deploy playbook
+# Ansible SELF deploy playbook
 
 ## Installing
 
@@ -17,10 +17,10 @@ $ git clone git@github.com:InnovaLangues/self-deploy.git
 
 ````
 
-### Make a production file from production.dist
+### Make a real file from servers.dist
 ````bash
-$ cp production.dist production
-$ vi production
+$ cp servers.dist servers
+$ vi servers
 ````
 
 ### Have the correct SSH keys set up
@@ -28,5 +28,7 @@ $ vi production
 ## Run
 
 ````bash
-$ ansible-playbook -i production self.yml --ask-sudo-pass
+$ ansible-playbook -i servers playbook-prod.yml --ask-sudo-pass
 ````
+
+(or "preprod" instead of "prod")

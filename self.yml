@@ -1,5 +1,0 @@
----
-# file: self.yml
-- include: pre_deploy.yml
-- include: webservers.yml
-- include: post_deploy.yml

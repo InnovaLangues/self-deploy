@@ -1,0 +1,5 @@
+[web:children]
+gricad-uga-web
+
+[gricad-uga-web]
+self.univ-grenoble-alpes.fr

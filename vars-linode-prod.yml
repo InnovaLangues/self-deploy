@@ -1,0 +1,19 @@
+---
+project_release: ~
+project_keep_releases: 5
+project_name: self.innovalangues.net
+project_path: /usr/share/nginx/www
+project_gluster_mount: /storage-pool/www
+project_root: "{{ project_path }}/{{ project_name }}"
+project_web_root: "{{ project_root }}/web"
+project_repo: https://github.com/InnovaLangues/self.git
+project_clean_versioning: true
+project_composer_opts: "--no-dev --optimize-autoloader --no-interaction"
+project_php_path: php
+project_env: prod
+project_composer_path: "{{ project_root }}/shared"
+project_console_opts: "--no-debug"
+fire_migrations: true
+project_branch: stable
+remote_user: www-data
+local_user: Hubot

@@ -1,7 +1,7 @@
 ---
 project_release: ~
 project_keep_releases: 5
-project_name: self.innovalangues.net
+project_name: self.univ-grenoble-alpes.fr
 project_path: /usr/share/nginx/www
 project_gluster_mount: /storage-pool/www
 project_root: "{{ project_path }}/{{ project_name }}"
@@ -14,6 +14,6 @@ project_env: prod
 project_composer_path: "{{ project_root }}/shared"
 project_console_opts: "--no-debug"
 fire_migrations: true
-project_branch: "master"
+project_branch: stable
 remote_user: www-data
 local_user: Hubot

@@ -32,5 +32,6 @@ $ ansible-playbook -i infra-linode playbook-prod.yml --ask-sudo-pass
 ````
 
 You can replace "**linode**" by : **gricad-uga**
+
 You can replace "**prod**" by : **preprod**
 

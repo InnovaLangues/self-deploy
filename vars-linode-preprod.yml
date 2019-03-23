@@ -14,6 +14,6 @@ project_env: prod
 project_composer_path: "{{ project_root }}/shared"
 project_console_opts: "--no-debug"
 fire_migrations: true
-project_branch: "master"
+project_branch: master
 remote_user: www-data
 local_user: Hubot

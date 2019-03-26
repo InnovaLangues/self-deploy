@@ -82,20 +82,19 @@
 - name: Dump assets.
   shell: cd {{project_root}}/releases/{{project_release}} && {{project_php_path}} app/console assetic:dump --env={{project_env}} {{project_console_opts}}
 
-# - name: Lock website
-#   shell: cd {{project_root}}/releases/{{project_release}} && php app/console lexik:maintenance:lock -n
+- name: Lock website
+  shell: cd {{project_root}}/releases/{{project_release}} && php app/console lexik:maintenance:lock -n
 
-# - name: Create symlink.
-#   file: state=link src={{project_root}}/releases/{{project_release}} path={{project_root}}/current
+- name: Create symlink.
+  file: state=link src={{project_root}}/releases/{{project_release}} path={{project_root}}/current
 
-# - name: Run migrations.
-#   shell: cd {{project_root}}/releases/{{project_release}} && php app/console doctrine:migrations:migrate -n
-#   when: inventory_hostname == groups.web[0] and fire_migrations == true
+- name: Run migrations.
+  shell: cd {{project_root}}/releases/{{project_release}} && php app/console doctrine:migrations:migrate -n
+  when: inventory_hostname == groups.web[0] and fire_migrations == true
 
-# - name: Run fixtures.
-#   shell: cd {{project_root}}/releases/{{project_release}} && php app/console self:fixtures:load
-#   when: inventory_hostname == groups.web[0] and fire_migrations == true
+- name: Run fixtures.
+  shell: cd {{project_root}}/releases/{{project_release}} && php app/console self:fixtures:load
+  when: inventory_hostname == groups.web[0] and fire_migrations == true
 
-# - name: Cleanup releases.
-#   shell: cd {{project_root}}/releases && ls -t1 | tail -n +$(({{project_keep_releases}}+1)) | xargs -n1 rm -rf
-#   #notify: restart varnish
+- name: Cleanup releases.
+  shell: cd {{project_root}}/releases && ls -t1 | tail -n +$(({{project_keep_releases}}+1)) | xargs -n1 rm -rf

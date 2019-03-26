@@ -28,7 +28,7 @@ $ vi servers
 ## Run
 
 ````bash
-$ ansible-playbook -i infra-linode playbook-prod.yml --ask-sudo-pass
+$ ansible-playbook -i infra-linode playbook-linode-preprod.yml --ask-sudo-pass
 ````
 
 You can replace "**linode**" by : **gricad-uga**

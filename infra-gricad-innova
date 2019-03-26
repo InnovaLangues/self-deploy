@@ -1,0 +1,5 @@
+[web:children]
+gricad-innova-web
+
+[gricad-innova-web]
+self4.univ-grenoble-alpes.fr

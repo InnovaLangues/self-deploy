@@ -1,0 +1,24 @@
+---
+  - hosts: gricad-innova-web
+    sudo: yes
+    gather_facts: false
+    vars_files:
+      - vars-gricad-innova-prod.yml
+    roles:
+      - pre_deploy
+
+  - hosts: gricad-innova-web
+    sudo: yes
+    gather_facts: false
+    vars_files:
+      - vars-gricad-innova-prod.yml
+    roles:
+      - webtier
+
+  - hosts: gricad-innova-web
+    sudo: yes
+    gather_facts: false
+    vars_files:
+      - vars-gricad-innova-prod.yml
+    roles:
+      - post_deploy
